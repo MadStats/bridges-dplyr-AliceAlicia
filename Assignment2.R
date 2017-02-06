@@ -109,6 +109,7 @@ ggplot(data=M1 %>% filter(YEAR_BUILT_027>1966),aes(x=lon,y=lat,color=safety)) +
   geom_point(size=0.001,show.legend = T,alpha=0.5) + coord_fixed()
 dev.off()
 
+
 ## show the distribution of old bridges (defined by "built during 1920-1930" ) 
 ## all over the USA ,easily to find that old bridges has comparitive lower safety
 ## ratings.

@@ -16,6 +16,7 @@ install.packages("choroplethrMaps")
 install.packages("ggplot2")
 install.packages("ggmap",type="source")
 install.packages("mapproj")
+install.packages("hexbin")
 
 library(plyr)
 library(choroplethr)
@@ -26,6 +27,7 @@ library(choroplethrMaps)
 library(ggplot2)
 library(ggmap)
 library(mapproj)
+library(hexbin)
 
 #1.prepare the basemap with the help of google.map
 ##get map of USA
@@ -64,13 +66,14 @@ min2dec = function(x){
   return(inte+decim)
 }
 M = mutate(M,lat = min2dec(LAT_016), lon = -min2dec(LONG_017))
-ggplot(data = M) + geom_point(mapping = aes(y = lat, x = lon))
+ggplot(data = M) + geom_hex(mapping = aes(y = lat, x = lon),alpha=0.5)
 M = M %>% filter(lon>-130,lat<50,lat>25)
-ggplot(data = M) + geom_point(mapping = aes(y = lat, x = lon))
+ggplot(data = M) + geom_hex(mapping = aes(y = lat, x = lon),alpha=0.5)
 M = M %>% filter(lon< -60)
 
 pdf("USbridge1.pdf",family="GB1")
-ggmap(mapUSA) + geom_point(data = M,size=0.001) + coord_fixed()
+ggmap(mapUSA) + geom_hex(data = M,mapping = aes(y = lat, x = lon),alpha=0.9) + 
+  coord_fixed()
 dev.off()
 
 
@@ -86,9 +89,9 @@ dev.off()
 
 M1 <- M %>% 
   filter(RAILINGS_036A!="N",
-                   TRANSITIONS_036B!="N",
-                   APPR_RAIL_036C!="N",
-                   APPR_RAIL_END_036D!="N") %>%
+         TRANSITIONS_036B!="N",
+         APPR_RAIL_036C!="N",
+         APPR_RAIL_END_036D!="N") %>%
   mutate(safety = as.numeric(RAILINGS_036A)+
            as.numeric(TRANSITIONS_036B)+
            as.numeric(APPR_RAIL_036C)+
@@ -102,11 +105,11 @@ M1$latest[M1$latest==F] = "before1966"
 #        geom_point(size=0.001,show.legend = T))
 pdf("USbridge_safety.pdf",family="GB1")
 ggplot(data=M1,aes(x=lon,y=lat,color=safety)) +
-  geom_point(size=0.001,show.legend = T,alpha=0.5) + coord_fixed()
+  geom_hex(show.legend = T) + coord_fixed()
 dev.off()
 pdf("USbridge_safety_latest50.pdf",family="GB1")
 ggplot(data=M1 %>% filter(YEAR_BUILT_027>1966),aes(x=lon,y=lat,color=safety)) +
-  geom_point(size=0.001,show.legend = T,alpha=0.5) + coord_fixed()
+  geom_hex(show.legend = T) + coord_fixed()
 dev.off()
 
 

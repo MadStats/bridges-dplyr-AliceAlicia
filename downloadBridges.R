@@ -2,6 +2,7 @@ install.packages("ggplot2")
 install.packages("plyr")
 install.packages("choroplethr")
 install.packages("dplyr")
+install.packages("data.table")
 
 library(plyr)
 library(choroplethr)
@@ -24,7 +25,7 @@ dest = "https://www.fhwa.dot.gov/bridge/nbi/2016/delimited/AK16.txt"
 tmp = fread(dest) 
 tmp = as.tbl(tmp)
 tmp1 = read_csv(dest)
-tmp2 = read_csv(dest, col_types = "character")  # could make them all characters...
+tmp2 = read_csv(dest, col_types = "c")  # could make them all characters...
 classes = sapply(tmp, class)
 
 
@@ -60,7 +61,8 @@ dat=list()
 
 
 dest= rep("", 52)
-for(i in 1:52) dest[i]=paste("https://www.fhwa.dot.gov/bridge/nbi/2016/delimited/", states[i,2],"16.txt", sep = "") 
+for(i in 1:52) 
+  dest[i]=paste("https://www.fhwa.dot.gov/bridge/nbi/2016/delimited/", states[i,2],"16.txt", sep = "") 
 x16 = ldply(dest, fread, colClasses = classes)  
 
 
